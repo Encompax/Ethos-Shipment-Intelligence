@@ -9,7 +9,7 @@ import SupplyChainOptimizationPanel from "../components/SupplyChainOptimizationP
 import WarehouseManagementPanel from "../components/WarehouseManagementPanel";
 import InventoryPanel from "../components/InventoryPanel";
 import CustomerAlignmentPanel from "../components/CustomerAlignmentPanel";
-import EOSPanel from "../components/EOSPanel";
+import LeanOperatingSystemPanel from "../components/LeanOperatingSystemPanel";
 import CommunicationPanel from "../components/CommunicationPanel";
 import MarketingInsightsPanel from "../components/MarketingInsightsPanel";
 import ReferencesPanel from "../components/ReferencesPanel";
@@ -26,7 +26,7 @@ export type PanelKey =
   | "warehouse"
   | "inventory"
   | "customer"
-  | "eos"
+  | "leanOps"
   | "communication"
   | "marketing"
   | "references";
@@ -139,12 +139,12 @@ export const PANEL_CONFIG: PanelConfig[] = [
     requiredPermissions: ["productAlignment:view"],
   },
   {
-    key: "eos",
-    label: "EOS",
+    key: "leanOps",
+    label: "LEAN Operating System",
     group: "Business",
-    component: EOSPanel,
+    component: LeanOperatingSystemPanel,
     showInOverview: true,
-    requiredPermissions: ["eos:view"],
+    requiredPermissions: ["leanOps:view"],
   },
   {
     key: "marketing",

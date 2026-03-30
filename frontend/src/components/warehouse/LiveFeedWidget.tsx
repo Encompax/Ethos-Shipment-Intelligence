@@ -38,14 +38,14 @@ interface ShipmentRow {
 
 interface ViewMetrics {
   totalOrders: number;
-  sysmex5740_qty: number;
-  sysmex5741_qty: number;
+  priority_count: number;
+  exception_count: number;
   estimated_weight_lbs: number;
   by_shipping_method: Record<string, number>;
   by_business_unit: Record<string, number>;
 }
 
-type ViewMode = "all" | "sysmex" | "internal" | "external";
+type ViewMode = "all" | "priority" | "internal" | "external";
 
 function statusBadge(row: ShipmentRow) {
   if (row.is_exception) return <span className="badge badge-error">Exception</span>;
@@ -86,25 +86,14 @@ function isInternationalOrder(row: ShipmentRow): boolean {
 }
 
 function getBusinessUnit(row: ShipmentRow): string {
-  if (!row.business_unit) {
-    if (row.gp_customer_id?.includes("Exocell")) return "Exocell";
-    if (row.gp_customer_id?.includes("ABI")) return "ABI";
-    if (row.gp_customer_id?.includes("ADI")) return "ADI";
-    if (row.gp_customer_id?.includes("Ethos")) return "Ethos";
-    return "External";
-  }
-  return row.business_unit;
+  return row.business_unit || "External";
 }
 
 function calculateMetrics(rows: ShipmentRow[]): ViewMetrics {
   const metrics: ViewMetrics = {
     totalOrders: new Set(rows.map(r => r.gp_order_number)).size,
-    sysmex5740_qty: rows
-      .filter(r => r.item_number?.includes("5740"))
-      .reduce((sum, r) => sum + (r.quantity_requested || r.pack_qty || 0), 0),
-    sysmex5741_qty: rows
-      .filter(r => r.item_number?.includes("5741"))
-      .reduce((sum, r) => sum + (r.quantity_requested || r.pack_qty || 0), 0),
+    priority_count: rows.filter(r => r.is_exception || r.is_hazmat || r.is_freight).length,
+    exception_count: rows.filter(r => r.is_exception).length,
     estimated_weight_lbs: rows.reduce((sum, r) => sum + (r.weight_lbs || 0), 0),
     by_shipping_method: {},
     by_business_unit: {},
@@ -145,12 +134,12 @@ export function LiveFeedWidget() {
   if (error) return <div style={{ color: "var(--color-error)", fontSize: "var(--font-size-sm)" }}>⚠ {error}</div>;
 
   let filtered = rows;
-  if (viewMode === "sysmex") {
-    filtered = rows.filter(r => r.item_number?.includes("5740") || r.item_number?.includes("5741"));
+  if (viewMode === "priority") {
+    filtered = rows.filter(r => r.is_exception || r.is_hazmat || r.is_freight);
   } else if (viewMode === "internal") {
     filtered = rows.filter(r => {
       const unit = getBusinessUnit(r);
-      return ["Exocell", "ABI", "ADI", "Ethos"].includes(unit);
+      return unit.toLowerCase() === "internal";
     });
   } else if (viewMode === "external") {
     filtered = rows.filter(r => getBusinessUnit(r) === "External");
@@ -185,18 +174,18 @@ export function LiveFeedWidget() {
           All Orders
         </button>
         <button
-          onClick={() => setViewMode("sysmex")}
+          onClick={() => setViewMode("priority")}
           style={{
             padding: "10px 16px",
-            border: viewMode === "sysmex" ? "2px solid var(--color-primary)" : "1px solid var(--color-border)",
-            backgroundColor: viewMode === "sysmex" ? "var(--color-primary-bg)" : "transparent",
+            border: viewMode === "priority" ? "2px solid var(--color-primary)" : "1px solid var(--color-border)",
+            backgroundColor: viewMode === "priority" ? "var(--color-primary-bg)" : "transparent",
             borderRadius: "4px",
             cursor: "pointer",
             fontSize: "12px",
-            fontWeight: viewMode === "sysmex" ? "600" : "400",
+            fontWeight: viewMode === "priority" ? "600" : "400",
           }}
         >
-          ★ Sysmex Only
+          ★ Priority / Exceptions
         </button>
         <button
           onClick={() => setViewMode("internal")}
@@ -240,12 +229,12 @@ export function LiveFeedWidget() {
           <div style={{ fontSize: "24px", fontWeight: "700", color: "var(--color-primary)" }}>{metrics.totalOrders}</div>
         </div>
         <div style={{ padding: "12px", backgroundColor: "var(--color-bg-muted)", borderRadius: "4px", border: "1px solid var(--color-border)" }}>
-          <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-secondary)", marginBottom: "4px" }}>ACC-SP5740 (40s)</div>
-          <div style={{ fontSize: "24px", fontWeight: "700", color: "var(--color-warning)" }}>{metrics.sysmex5740_qty}</div>
+          <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-secondary)", marginBottom: "4px" }}>Priority Shipments</div>
+          <div style={{ fontSize: "24px", fontWeight: "700", color: "var(--color-warning)" }}>{metrics.priority_count}</div>
         </div>
         <div style={{ padding: "12px", backgroundColor: "var(--color-bg-muted)", borderRadius: "4px", border: "1px solid var(--color-border)" }}>
-          <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-secondary)", marginBottom: "4px" }}>ACC-SP5741 (41s)</div>
-          <div style={{ fontSize: "24px", fontWeight: "700", color: "var(--color-warning)" }}>{metrics.sysmex5741_qty}</div>
+          <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-secondary)", marginBottom: "4px" }}>Exceptions</div>
+          <div style={{ fontSize: "24px", fontWeight: "700", color: "var(--color-warning)" }}>{metrics.exception_count}</div>
         </div>
         <div style={{ padding: "12px", backgroundColor: "var(--color-bg-muted)", borderRadius: "4px", border: "1px solid var(--color-border)" }}>
           <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-secondary)", marginBottom: "4px" }}>Est. Weight</div>

@@ -12,14 +12,14 @@ interface LotItem {
   location: string;
   received_date: string;
   expiration_date: string;
-  is_sysmex: boolean;
+  is_priority: boolean;
   status: 'available' | 'picking' | 'picked' | 'staged' | 'shipped';
   order_reference?: string;
 }
 
 interface LotSummary {
   total_active_lots: number;
-  sysmex_lots: number;
+  priority_lots: number;
   lots_near_expiration: number;
   total_quantity_in_stock: number;
   lots: LotItem[];
@@ -47,7 +47,7 @@ export function LotTrackingWidget() {
   const [data, setData] = useState<LotSummary | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const [filterSysmex, setFilterSysmex] = useState(false);
+  const [filterPriority, setFilterPriority] = useState(false);
   const [filterStatus, setFilterStatus] = useState<string | null>(null);
 
   useEffect(() => {
@@ -71,9 +71,9 @@ export function LotTrackingWidget() {
       lot.item_number.toLowerCase().includes(searchTerm.toLowerCase()) ||
       lot.lot_number.toLowerCase().includes(searchTerm.toLowerCase()) ||
       lot.item_description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesSysmex = !filterSysmex || lot.is_sysmex;
+    const matchesPriority = !filterPriority || lot.is_priority;
     const matchesStatus = !filterStatus || lot.status === filterStatus;
-    return matchesSearch && matchesSysmex && matchesStatus;
+    return matchesSearch && matchesPriority && matchesStatus;
   });
 
   const fmtN = (v: number) => v.toLocaleString();
@@ -83,7 +83,7 @@ export function LotTrackingWidget() {
       {/* KPI Cards */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: "var(--space-sm)", marginBottom: "var(--space-lg)" }}>
         <MetricCard label="Active Lots" value={fmtN(data.total_active_lots)} />
-        <MetricCard label="Sysmex Lots" value={fmtN(data.sysmex_lots)} sub="High Priority" />
+        <MetricCard label="Priority Lots" value={fmtN(data.priority_lots)} sub="Special handling" />
         <MetricCard label="Total Qty" value={fmtN(data.total_quantity_in_stock)} />
         <MetricCard label="Near Expiration" value={fmtN(data.lots_near_expiration)} sub="< 30 days" />
       </div>
@@ -105,18 +105,18 @@ export function LotTrackingWidget() {
           }}
         />
         <button
-          onClick={() => setFilterSysmex(!filterSysmex)}
+          onClick={() => setFilterPriority(!filterPriority)}
           style={{
             padding: "10px 16px",
-            border: filterSysmex ? "2px solid var(--color-primary)" : "1px solid var(--color-border)",
-            backgroundColor: filterSysmex ? "var(--color-primary-bg)" : "transparent",
+            border: filterPriority ? "2px solid var(--color-primary)" : "1px solid var(--color-border)",
+            backgroundColor: filterPriority ? "var(--color-primary-bg)" : "transparent",
             borderRadius: "4px",
             cursor: "pointer",
             fontSize: "var(--font-size-sm)",
-            fontWeight: filterSysmex ? "600" : "400",
+            fontWeight: filterPriority ? "600" : "400",
           }}
         >
-          Sysmex Only
+          Priority Only
         </button>
       </div>
 
@@ -181,9 +181,9 @@ export function LotTrackingWidget() {
 
               return (
                 <tr key={lot.id} style={{ borderBottom: "1px solid var(--color-border-muted)" }}>
-                  <td style={{ padding: "12px", fontWeight: lot.is_sysmex ? "700" : "500", color: lot.is_sysmex ? "var(--color-error)" : "var(--color-text-primary)" }}>
+                  <td style={{ padding: "12px", fontWeight: lot.is_priority ? "700" : "500", color: lot.is_priority ? "var(--color-error)" : "var(--color-text-primary)" }}>
                     {lot.item_number}
-                    {lot.is_sysmex && <span style={{ marginLeft: "4px", fontSize: "10px", color: "var(--color-error)" }}>★</span>}
+                    {lot.is_priority && <span style={{ marginLeft: "4px", fontSize: "10px", color: "var(--color-error)" }}>★</span>}
                   </td>
                   <td style={{ padding: "12px", fontFamily: "monospace", fontSize: "10px", color: "var(--color-text-secondary)" }}>
                     {lot.lot_number}

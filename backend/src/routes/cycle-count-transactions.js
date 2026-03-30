@@ -29,7 +29,7 @@ function generateMockCycleCountTransactions() {
         { item: "LBL-BL-15M", desc: "Label | Blank | 15 Millimeter", size: "LBL", um: "Each" },
         { item: "LBL-JL-5LG", desc: "Label | Jar Label", size: "LBL", um: "Each" },
         { item: "LBL-AZ-1234", desc: "Label | AZ Label", size: "LBL", um: "Each" },
-        { item: "40K031", desc: "Formatin Neutral Buffered, 1996, Lgst, EDM3", size: "40ml", um: "Bottle" },
+        { item: "40K031", desc: "Formatin Neutral Buffered, 1996, Lgst, Sample", size: "40ml", um: "Bottle" },
         { item: "400004", desc: "Formalin", size: "QT", um: "Bottle" },
         { item: "RM8324", desc: "Preservant", size: "CS", um: "Each" },
         { item: "RM8314", desc: "3-Methoxypropylamine/methylamine", size: "CS", um: "Kg" },

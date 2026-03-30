@@ -53,7 +53,7 @@ export function QCApprovalsWidget() {
         {
           id: '1',
           item_number: 'ACC-SP5740',
-          item_description: 'ColorWright Wright Stain, 4L, Sysmex',
+          item_description: 'Sample Item A, 4L',
           batch_number: 'BATCH-202603-SP5740-001',
           quantity: 120,
           production_date: '2026-03-10',
@@ -67,7 +67,7 @@ export function QCApprovalsWidget() {
         {
           id: '2',
           item_number: 'ACC-SP5741',
-          item_description: 'ColorWright Wright-Giemsa, 4L, Sysmex',
+          item_description: 'Sample Item B, 4L',
           batch_number: 'BATCH-202603-SP5741-001',
           quantity: 100,
           production_date: '2026-03-10',
@@ -165,7 +165,7 @@ export function QCApprovalsWidget() {
         {
           id: '9',
           item_number: 'ACC-SP5740',
-          item_description: 'ColorWright Wright Stain, 4L, Sysmex',
+          item_description: 'Sample Item A, 4L',
           batch_number: 'BATCH-202603-SP5740-002',
           quantity: 100,
           production_date: '2026-03-13',

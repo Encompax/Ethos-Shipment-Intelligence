@@ -30,7 +30,7 @@ const INTEGRATION_MODULES = {
   paycom: () => require('./paycom'),
   dynamics_gp: () => require('./dynamics-gp'),
   velocity: () => require('./velocity'),
-  ninety_io: () => require('./ninety-io'),
+  lean_ops: () => require('./lean_ops'),
 };
 
 const runningWorkers = {};

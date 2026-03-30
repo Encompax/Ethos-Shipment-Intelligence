@@ -1,35 +1,47 @@
 // backend/src/routes/fulfillment-transactions.ts
 import { Express, Router, Request, Response } from "express";
 import { prisma } from "../lib/prisma";
+import { getTenantConfig } from "../config/tenant-config";
 
 // Mock data representing real fulfillment workflow
 const generateMockFulfillmentOrders = () => {
-  const operators = ["Mike Chen", "James Rodriguez", "Sarah Williams", "b.richardson"];
-  
+  const { customers, items, operators, locations } = getTenantConfig();
+  const resolvedOperators = operators.length ? operators : ["Operator A", "Operator B", "Operator C"];
+  const resolvedCustomers = customers.length ? customers : ["Customer Alpha", "Customer Beta", "Customer Gamma"];
+  const resolvedItems = items.length
+    ? items
+    : [
+        { sku: "SKU-1001", description: "Sample Item A" },
+        { sku: "SKU-1002", description: "Sample Item B" },
+        { sku: "SKU-2001", description: "Sample Item C" },
+        { sku: "SKU-3001", description: "Sample Item D" },
+      ];
+  const resolvedLocations = locations.length ? locations : ["Site A", "Site B", "Site C"];
+
   const orders = [
     {
       sales_order_number: "ORD-001842",
       created_date: new Date(Date.now() - 4 * 60 * 60 * 1000),
-      customer: "EDM3",
+      customer: resolvedCustomers[0],
       business_unit: "External",
-      destination: "Indianapolis, IN",
+      destination: resolvedLocations[0],
       line_items: [
         {
           line_number: 1,
-          item_number: "ACC-SP5740",
-          item_description: "ColorWright Wright Stain, 4L, Sysmex",
+          item_number: resolvedItems[0].sku,
+          item_description: resolvedItems[0].description,
           quantity_requested: 12,
           quantity_allocated: 12,
           picking: {
             quantity_picked: 12,
             lot_number: "LOT-202603-SP5740-001",
-            picked_by: "Mike Chen",
+            picked_by: resolvedOperators[0],
             picked_timestamp: new Date(Date.now() - 3.5 * 60 * 60 * 1000),
             status: "picked",
           },
           verification: {
             quantity_verified: 12,
-            verified_by: "James Rodriguez",
+            verified_by: resolvedOperators[1] || resolvedOperators[0],
             verified_timestamp: new Date(Date.now() - 3 * 60 * 60 * 1000),
             status: "verified",
           },
@@ -39,26 +51,26 @@ const generateMockFulfillmentOrders = () => {
     {
       sales_order_number: "ORD-001843",
       created_date: new Date(Date.now() - 3.8 * 60 * 60 * 1000),
-      customer: "Sysmex Americas",
+      customer: resolvedCustomers[1] || resolvedCustomers[0],
       business_unit: "External",
-      destination: "Chicago, IL",
+      destination: resolvedLocations[1] || resolvedLocations[0],
       line_items: [
         {
           line_number: 1,
-          item_number: "ACC-SP5741",
-          item_description: "ColorWright Wright-Giemsa, 4L, Sysmex",
+          item_number: resolvedItems[1]?.sku || resolvedItems[0].sku,
+          item_description: resolvedItems[1]?.description || resolvedItems[0].description,
           quantity_requested: 8,
           quantity_allocated: 8,
           picking: {
             quantity_picked: 8,
             lot_number: "LOT-202603-SP5741-001",
-            picked_by: "Mike Chen",
+            picked_by: resolvedOperators[0],
             picked_timestamp: new Date(Date.now() - 3.2 * 60 * 60 * 1000),
             status: "picked",
           },
           verification: {
             quantity_verified: 8,
-            verified_by: "Sarah Williams",
+            verified_by: resolvedOperators[2] || resolvedOperators[0],
             verified_timestamp: new Date(Date.now() - 2.9 * 60 * 60 * 1000),
             status: "verified",
           },
@@ -68,20 +80,20 @@ const generateMockFulfillmentOrders = () => {
     {
       sales_order_number: "ORD-001844",
       created_date: new Date(Date.now() - 2.5 * 60 * 60 * 1000),
-      customer: "Sysmex Americas",
+      customer: resolvedCustomers[1] || resolvedCustomers[0],
       business_unit: "External",
-      destination: "Atlanta, GA",
+      destination: resolvedLocations[2] || resolvedLocations[0],
       line_items: [
         {
           line_number: 1,
-          item_number: "FG-5001",
-          item_description: "Genomic Assay Kit v3.2",
+          item_number: resolvedItems[2]?.sku || resolvedItems[0].sku,
+          item_description: resolvedItems[2]?.description || resolvedItems[0].description,
           quantity_requested: 24,
           quantity_allocated: 24,
           picking: {
             quantity_picked: 24,
             lot_number: "LOT-202603-FG5001-050",
-            picked_by: "James Rodriguez",
+            picked_by: resolvedOperators[1] || resolvedOperators[0],
             picked_timestamp: new Date(Date.now() - 2.2 * 60 * 60 * 1000),
             status: "picked",
           },
@@ -92,20 +104,20 @@ const generateMockFulfillmentOrders = () => {
     {
       sales_order_number: "ORD-001845",
       created_date: new Date(Date.now() - 1.8 * 60 * 60 * 1000),
-      customer: "EDM3",
+      customer: resolvedCustomers[0],
       business_unit: "External",
-      destination: "Boston, MA",
+      destination: resolvedLocations[0],
       line_items: [
         {
           line_number: 1,
-          item_number: "RM-2401",
-          item_description: "DNA Extraction Buffer, 1L",
+          item_number: resolvedItems[3]?.sku || resolvedItems[0].sku,
+          item_description: resolvedItems[3]?.description || resolvedItems[0].description,
           quantity_requested: 36,
           quantity_allocated: 36,
           picking: {
             quantity_picked: 36,
             lot_number: "LOT-202603-RM2401-012",
-            picked_by: "Sarah Williams",
+            picked_by: resolvedOperators[2] || resolvedOperators[0],
             picked_timestamp: new Date(Date.now() - 1.5 * 60 * 60 * 1000),
             status: "picked",
           },
@@ -116,14 +128,14 @@ const generateMockFulfillmentOrders = () => {
     {
       sales_order_number: "ORD-001846",
       created_date: new Date(Date.now() - 1.2 * 60 * 60 * 1000),
-      customer: "Exocell",
+      customer: resolvedCustomers[2] || resolvedCustomers[0],
       business_unit: "Internal",
       destination: "In-house staging",
       line_items: [
         {
           line_number: 1,
-          item_number: "RGT-3101",
-          item_description: "Array Platform Reagent Kit",
+          item_number: resolvedItems[0].sku,
+          item_description: resolvedItems[0].description,
           quantity_requested: 4,
           quantity_allocated: 4,
           picking: { status: "pending" }, // Not yet picked
@@ -136,22 +148,22 @@ const generateMockFulfillmentOrders = () => {
     {
       sales_order_number: "ORD-001847",
       created_date: new Date(Date.now() - 55 * 60 * 1000),
-      customer: "Sysmex Americas",
+      customer: resolvedCustomers[1] || resolvedCustomers[0],
       business_unit: "External",
-      destination: "Chicago, IL",
+      destination: resolvedLocations[1] || resolvedLocations[0],
       backorder_reference: "ORD-001829",
       backorder_note: "Partial shipment from ORD-001829 (8 units shipped 3/15, 8 units backlog)",
       line_items: [
         {
           line_number: 1,
-          item_number: "ACC-SP5740",
-          item_description: "ColorWright Wright Stain, 4L, Sysmex",
+          item_number: resolvedItems[0].sku,
+          item_description: resolvedItems[0].description,
           quantity_requested: 8, // This is just the backlog portion
           quantity_allocated: 8,
           picking: {
             quantity_picked: 8,
             lot_number: "LOT-202602-SP5740-056",
-            picked_by: "Mike Chen",
+            picked_by: resolvedOperators[0],
             picked_timestamp: new Date(Date.now() - 50 * 60 * 1000),
             status: "picked",
             notes: "Backlog from ORD-001829 (8 of 16 units)",

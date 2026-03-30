@@ -22,7 +22,7 @@ const CURRENT_USER_PERMISSIONS: string[] = [
   "warehouse:view",
   "inventory:view",
   "customer:view",
-  "eos:view",
+  "leanOps:view",
   "communication:view",
   "marketing:view",
   "references:view",

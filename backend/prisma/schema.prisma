@@ -108,7 +108,7 @@ model LotTrackingItem {
  location              String
  received_date         DateTime
  expiration_date       DateTime
- is_sysmex             Boolean   @default(false)
+ is_sysmex             Boolean   @default(false) // Tenant-specific priority / special-handling flag
  status                String    @default("available") // available, picking, picked, staged, shipped
  order_reference       String?
  production_date       DateTime?
@@ -121,7 +121,7 @@ model ShipmentCarrier {
  id                  String    @id @default(cuid())
  shipment_id         String    @unique
  order_id            String
- carrier_name        String    // FedEx Ground, FedEx Express, FedEx Freight, UPS
+ carrier_name        String    // Carrier display name
  service_type        String
  tracking_number     String?
  weight_lbs          Float
@@ -159,7 +159,7 @@ model QCApproval {
 model StagingItem {
  id                   String    @id @default(cuid())
  order_id             String
- order_source         String    // ground_pallet, online_website
+ order_source         String    // e.g., pallet, ecommerce, wholesale
  item_number          String
  item_description     String
  lot_number           String
@@ -177,7 +177,7 @@ model StagingItem {
  updated_at           DateTime  @updatedAt
 }
 
-// ─── Order Fulfillment Transaction Models (PanatrackerGP-aligned) ──────────
+// ─── Order Fulfillment Transaction Models (WMS/ERP-aligned) ────────────────
 
 model OrderLineItem {
  id                   String    @id @default(cuid())
@@ -223,7 +223,7 @@ model VerificationTransaction {
  created_at           DateTime  @default(now())
 }
 
-// ─── Warehouse Inventory Movement (PanatrackerGP Item Bin Moves) ───────────
+// ─── Warehouse Inventory Movement (WMS/ERP Item Bin Moves) ─────────────────
 
 model InventoryMovement {
  id                   String    @id @default(cuid())
@@ -240,7 +240,7 @@ model InventoryMovement {
  reason               String    // QC_PASS, QC_FAIL, PICKING_PREP, DAMAGED, CYCLE_COUNT, RECEIVE, etc.
  unit_of_measure      String    // Unit (each, box, case, etc.)
  transaction_status   String    @default("success") // success, failed, reversed
- panatracker_ref      String?   // Reference to PanatrackerGP transaction ID when available
+ panatracker_ref      String?   // Reference to external WMS/ERP transaction ID when available
  notes                String?   // Additional context
  created_at           DateTime  @default(now())
  updated_at           DateTime  @updatedAt

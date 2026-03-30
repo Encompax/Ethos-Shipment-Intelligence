@@ -7,9 +7,12 @@ export function registerLotTrackingRoutes(app: Express) {
   // GET /api/inventory/lot-tracking
   router.get("/", async (req: Request, res: Response) => {
     try {
-      const filterSysmex = req.query.sysmex === "true";
+      const filterPriority =
+        req.query.priority === "true" ||
+        req.query.special === "true" ||
+        req.query.sysmex === "true";
 
-      const where = filterSysmex ? { is_sysmex: true } : {};
+      const where = filterPriority ? { is_sysmex: true } : {};
       const lots = await prisma.lotTrackingItem.findMany({ where, orderBy: { received_date: "desc" } });
 
       const now = Date.now();
@@ -18,12 +21,17 @@ export function registerLotTrackingRoutes(app: Express) {
         return daysUntilExpiry < 30 && daysUntilExpiry > 0;
       }).length;
 
+      const mappedLots = lots.map(({ is_sysmex, ...rest }) => ({
+        ...rest,
+        is_priority: is_sysmex,
+      }));
+
       res.json({
         total_active_lots: lots.length,
-        sysmex_lots: lots.filter((l) => l.is_sysmex).length,
+        priority_lots: lots.filter((l) => l.is_sysmex).length,
         lots_near_expiration: lotsNearExpiration,
         total_quantity_in_stock: lots.reduce((sum, l) => sum + l.quantity_total, 0),
-        lots,
+        lots: mappedLots,
       });
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch lot tracking data" });
@@ -50,7 +58,7 @@ export function registerLotTrackingRoutes(app: Express) {
   // POST /api/inventory/lot-tracking
   router.post("/", async (req: Request, res: Response) => {
     try {
-      const { lot_number, item_number, item_description, quantity_total, location, status, expiration_date, received_date, is_sysmex, order_reference } = req.body;
+      const { lot_number, item_number, item_description, quantity_total, location, status, expiration_date, received_date, is_priority, priority, is_sysmex, order_reference } = req.body;
 
       if (!lot_number || !item_number || quantity_total === undefined || quantity_total === null || !location) {
         return res.status(400).json({
@@ -76,7 +84,7 @@ export function registerLotTrackingRoutes(app: Express) {
           status: status || "available",
           received_date: received_date ? new Date(received_date) : new Date(),
           expiration_date: expiration_date ? new Date(expiration_date) : new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
-          is_sysmex: is_sysmex === true,
+          is_sysmex: is_priority === true || priority === true || is_sysmex === true,
           order_reference: order_reference || null,
         },
       });

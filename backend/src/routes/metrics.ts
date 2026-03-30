@@ -4,7 +4,7 @@
  * Metrics API — serves normalized metrics from all integrations.
  *
  * GET  /api/metrics                    — list all recent metrics
- * GET  /api/metrics?source=ninety_io   — filter by integration source
+ * GET  /api/metrics?source=lean_ops    — filter by integration source
  * GET  /api/metrics?metric_key=...     — filter by metric key
  * GET  /api/metrics/summary            — aggregated metrics by source
  * GET  /api/metrics/integrations       — integration sync status
@@ -42,7 +42,7 @@ export function registerMetricsRoutes(app: Express) {
 
   /**
    * GET /api/metrics
-   * ?source=ninety_io  ?metric_key=...  ?limit=100  ?hours=24
+   * ?source=lean_ops  ?metric_key=...  ?limit=100  ?hours=24
    */
   router.get('/', (req: Request, res: Response) => {
     try {
@@ -93,7 +93,7 @@ export function registerMetricsRoutes(app: Express) {
 
   /**
    * GET /api/metrics/latest
-   * ?source=ninety_io  ?hours=24
+   * ?source=lean_ops  ?hours=24
    */
   router.get('/latest', (req: Request, res: Response) => {
     try {
@@ -173,7 +173,7 @@ export function registerMetricsRoutes(app: Express) {
 
   /**
    * GET /api/metrics/signal/:metric_key
-   * ?source=ninety_io  ?days=7
+   * ?source=lean_ops  ?days=7
    */
   router.get('/signal/:metric_key', (req: Request, res: Response) => {
     try {

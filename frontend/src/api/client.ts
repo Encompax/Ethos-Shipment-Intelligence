@@ -97,9 +97,9 @@ export async function fetchCarrierPerformance() {
 
 // ── Inventory: Lot Tracking ────────────────────────────────────────────────
 
-export async function fetchLotTracking(filters?: { sysmexOnly?: boolean }) {
+export async function fetchLotTracking(filters?: { priorityOnly?: boolean }) {
   const params = new URLSearchParams();
-  if (filters?.sysmexOnly) params.set('sysmex', 'true');
+  if (filters?.priorityOnly) params.set('priority', 'true');
   const res = await fetch(`${API_BASE}/inventory/lot-tracking?${params}`);
   if (!res.ok) throw new Error(`Lot tracking error: ${res.status}`);
   return res.json();

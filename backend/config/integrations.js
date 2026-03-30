@@ -89,25 +89,25 @@ const INTEGRATION_REGISTRY = {
     },
   },
 
-  ninety_io: {
-    name: 'Ninety.io EOS',
-    enabled: !!process.env.NINETY_IO_API_KEY,
-    description: 'EOS framework: Scorecard metrics, Rocks, Accountability chart',
-    requiredEnvVars: ['NINETY_IO_API_KEY'],
-    syncIntervalMs: parseInt(process.env.NINETY_IO_SYNC_INTERVAL_MS || '3600000', 10), // 1 hour
+  lean_ops: {
+    name: 'LEAN Operating System',
+    enabled: process.env.LEAN_OPS_ENABLED === 'true',
+    description: 'LEAN operating system tools (huddles, standard work, kaizen, daily management)',
+    requiredEnvVars: ['LEAN_OPS_ENABLED'],
+    syncIntervalMs: parseInt(process.env.LEAN_OPS_SYNC_INTERVAL_MS || '3600000', 10), // 1 hour
     metrics: [
-      'scorecard_health',
-      'rocks_completion_count',
-      'on_track_count',
-      'off_track_count',
-      'at_risk_count',
+      'daily_management_health',
+      'kaizen_open_count',
+      'kaizen_closed_count',
+      'standard_work_adherence',
+      'problem_solving_cycle_time',
     ],
     dataPoints: {
-      scorecard_health: { type: 'percentage', description: 'Health of company scorecard' },
-      rocks_completion_count: { type: 'number', description: 'Rocks completed on schedule' },
-      on_track_count: { type: 'number', description: 'Employees on track with priorities' },
-      off_track_count: { type: 'number', description: 'Employees off track' },
-      at_risk_count: { type: 'number', description: 'At-risk priorities' },
+      daily_management_health: { type: 'percentage', description: 'Daily management health score' },
+      kaizen_open_count: { type: 'number', description: 'Open kaizen items' },
+      kaizen_closed_count: { type: 'number', description: 'Closed kaizen items' },
+      standard_work_adherence: { type: 'percentage', description: 'Standard work adherence rate' },
+      problem_solving_cycle_time: { type: 'number', description: 'Avg cycle time for problem resolution' },
     },
   },
 

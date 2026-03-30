@@ -6,7 +6,7 @@ This repo was assembled from legacy Encompax branches and now contains the shipp
 **What's Inside**
 - `frontend`: Vite + React operations dashboard with warehouse and shipment intelligence panels.
 - `backend`: Core API services and integrations.
-- `backend/sil`: Shipment Intelligence Layer (SIL) with StarShip polling, FedEx enrichment, and shipment metrics APIs.
+- `backend/sil`: Shipment Intelligence Layer (SIL) with legacy shipping polling, carrier enrichment, and shipment metrics APIs.
 - `infra`: Firebase configuration (rules + project metadata).
 - `INTEGRATION_ROADMAP.md`: Integration roadmap and governance-aligned connector strategy.
 

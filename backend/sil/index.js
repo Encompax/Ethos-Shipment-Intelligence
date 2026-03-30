@@ -166,7 +166,7 @@ app.get('/api/sil/in-transit', (req, res) => {
   }
 });
 
-// Exceptions — active FedEx exception shipments
+// Exceptions — active carrier exception shipments
 app.get('/api/sil/exceptions', (req, res) => {
   try {
     const db = getDb();

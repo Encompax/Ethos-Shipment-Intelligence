@@ -5,7 +5,7 @@ import {
   PanelKey,
   PanelConfig,
 } from "../config/panels";
-import EthosBiosciencesLogo from "../components/EthosBiosciencesLogo";
+import EthosLogo from "../components/EthosLogo";
 import EncompaxMark from "../components/EncompaxMark";
 
 type TabKey = "overview" | PanelKey;
@@ -99,7 +99,7 @@ const Dashboard: React.FC = () => {
 
         {/* Client brand — Ethos Shipment Intelligence, front and center */}
         <div className="sidebar-client-brand">
-          <EthosBiosciencesLogo size={34} />
+          <EthosLogo size={34} />
           <div className="sidebar-client-text">
             <span className="sidebar-client-name">Ethos</span>
             <span className="sidebar-client-sub">Shipment Intelligence</span>

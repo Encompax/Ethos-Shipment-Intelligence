@@ -20,6 +20,7 @@ const IntegrationWorker = require('../lib/integration-worker');
 const API_KEY = process.env.PAYCOM_API_KEY;
 const COMPANY_ID = process.env.PAYCOM_COMPANY_ID;
 const PAYCOM_BASE_URL = 'https://secure.paycom.net/api/';
+const DEFAULT_TENANT_NAME = process.env.TENANT_NAME || 'Client Organization';
 
 class PaycomIntegration extends IntegrationWorker {
   async sync() {
@@ -66,7 +67,7 @@ class PaycomIntegration extends IntegrationWorker {
         { id: 2, name: 'Jane Smith', status: 'A', hireDate: '2021-06-01', department: 'Finance' },
         // ... more employees
       ],
-      company: { id: COMPANY_ID, name: 'Ethos Biosciences Inc' },
+      company: { id: COMPANY_ID, name: DEFAULT_TENANT_NAME },
     };
   }
 

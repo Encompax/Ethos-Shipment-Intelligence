@@ -2,7 +2,7 @@
 
 ## Overview
 
-Encompax will become a **unified data hub** by integrating APIs from your existing platforms (Paycom, Dynamics GP, Ninety.io, Velocity, Microsoft) and syncing relevant metrics into a normalized database. The frontend dashboard then displays these metrics as trending cards and customizable widgets.
+Encompax will become a **unified data hub** by integrating APIs from your existing platforms (Paycom, Dynamics GP, Velocity, Microsoft, and LEAN Operating System tooling) and syncing relevant metrics into a normalized database. The frontend dashboard then displays these metrics as trending cards and customizable widgets.
 
 ---
 
@@ -11,14 +11,14 @@ Encompax will become a **unified data hub** by integrating APIs from your existi
 ### Why Integrate APIs?
 
 1. **Eliminate Data Silos** 
-   - Currently: Users context-switch between Paycom, GP, Velocity, Ninety.io
+   - Currently: Users context-switch between Paycom, GP, Velocity, and LEAN operating system tools
    - Future: One dashboard with all critical metrics
    
 2. **Real-Time Insights**
    - Paycom → Headcount alerts when someone leaves
    - Dynamics GP → Revenue updates as orders close
    - Velocity → OEE changes with every shift report
-   - Ninety.io → Rocks completion status updates
+   - LEAN Operating System → Daily management and kaizen status updates
 
 3. **Cross-Functional Visibility**
    - Finance sees production delays (Velocity) affecting revenue forecasts (GP)
@@ -38,7 +38,7 @@ Encompax will become a **unified data hub** by integrating APIs from your existi
 ## Target Integrations
 
 ### Phase 1 (Now) — Foundation
-- **SIL + FedEx** ✅ (already integrated)
+- **SIL + carrier tracking** ✅ (configurable)
 - Shipment Intelligence feeds dashboard
 
 ### Phase 2 (Next 1-2 months) — Core Business
@@ -55,9 +55,9 @@ Encompax will become a **unified data hub** by integrating APIs from your existi
   - OEE, Changeovers, WIP, Schedule Attainment
   - Real-time floor data on executive dashboard
 
-- **Ninety.io** (EOS Framework)
-  - Scorecard metrics, Rocks status, Accountability chart
-  - Sync with company-wide goals
+- **LEAN Operating System**
+  - Daily management, standard work, kaizen, problem-solving boards
+  - Sync operational health and continuous improvement signals
 
 ### Phase 4 (3+ months) — Communication & Insights
 - **Microsoft Graph** (Teams, Outlook, Excel)
@@ -100,12 +100,12 @@ const INTEGRATION_REGISTRY = {
     metrics: ['oee', 'changeovers', 'wip_count', 'schedule_attainment'],
   },
   
-  ninety_io: {
-    name: 'Ninety.io EOS',
-    enabled: !!process.env.NINETY_IO_API_KEY,
-    requiredEnvVars: ['NINETY_IO_API_KEY'],
+  lean_ops: {
+    name: 'LEAN Operating System',
+    enabled: process.env.LEAN_OPS_ENABLED === 'true',
+    requiredEnvVars: ['LEAN_OPS_ENABLED'],
     syncInterval: 3600000, // 1 hour
-    metrics: ['scorecard_health', 'rocks_completion', 'on_track_count'],
+    metrics: ['daily_management_health', 'kaizen_open_count', 'standard_work_adherence'],
   },
   
   // ... more integrations
@@ -240,7 +240,7 @@ CREATE TABLE dashboard_layouts (
 ### Phase 3+
 
 - [ ] Velocity integration (real-time OEE, WIP)
-- [ ] Ninety.io integration (Scorecard, Rocks)
+- [ ] LEAN Operating System integration (daily management, kaizen)
 - [ ] Dashboard builder UI
 - [ ] User dashboard layouts (saved preferences)
 - [ ] Webhook listeners (real-time push from integrations)
@@ -255,7 +255,7 @@ CREATE TABLE dashboard_layouts (
 PAYCOM_API_KEY=sk_live_...           # Encrypted in vault
 DYNAMICS_GP_API_KEY=...             # Scoped to read-only
 VELOCITY_API_KEY=...
-NINETY_IO_API_KEY=...
+LEAN_OPS_ENABLED=true
 
 # No keys in git; use GitHub Secrets or vault
 ```
@@ -282,7 +282,7 @@ CREATE TABLE integration_audits (
 - Paycom: 100 req/min per API key
 - GP: 300 req/min per API
 - Velocity: Check docs (likely real-time)
-- Ninety.io: Generous, but batch when possible
+- LEAN Ops: Internal service — batch when possible
 
 ---
 
@@ -376,12 +376,12 @@ npm run query:metrics --source=paycom --metric=headcount
    - Paycom: OAuth or API key?
    - GP: Windows auth, SQL, or REST API?
    - Velocity: REST, GraphQL, or database connection?
-   - Ninety.io: REST with API key?
+   - LEAN Ops: internal service, REST or database?
 
 2. **Real-Time vs Scheduled:**
    - Paycom/GP: Hourly sync? (data doesn't change constantly)
    - Velocity: 5-minute pull? Or subscribe to production events?
-   - Ninety.io: Daily/weekly (less volatile)?
+   - LEAN Ops: Daily/weekly (less volatile)?
 
 3. **Data Retention:**
    - Keep all historical metrics (data warehouse)?

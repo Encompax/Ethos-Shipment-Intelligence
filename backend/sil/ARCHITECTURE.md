@@ -95,7 +95,7 @@ Shows:
 
 ### Active Workers
 ```
-starshipPoller   ← Polls StarShip at http://d121q0t2:180
+starshipPoller   ← Polls StarShip at http://shipping-system.local:180
 fedexEnricher    ← Enriches with FedEx tracking data
 karrio           ← DISABLED (stub, for Phase 2+)
 ```

@@ -20,7 +20,7 @@ interface Props {
  * drop it at /public/ethos-logo.png and replace the <svg> with:
  *   <img src="/ethos-logo.png" alt="Ethos Shipment Intelligence" height={size} style={{ filter: "brightness(0) invert(1)" }} />
  */
-const EthosBiosciencesLogo: React.FC<Props> = ({ size = 34 }) => (
+const EthosLogo: React.FC<Props> = ({ size = 34 }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 60 60"
@@ -31,13 +31,13 @@ const EthosBiosciencesLogo: React.FC<Props> = ({ size = 34 }) => (
   >
     <defs>
       {/* Clip teal bars to circle interior only */}
-      <clipPath id="eb-inner">
+      <clipPath id="ethos-inner">
         <circle cx="30" cy="30" r="13.5" />
       </clipPath>
     </defs>
 
     {/* ── Teal interior bars (DNA rungs) — drawn first, ring covers edges ── */}
-    <g clipPath="url(#eb-inner)">
+    <g clipPath="url(#ethos-inner)">
       <line x1="12" y1="22" x2="48" y2="22" stroke="#47BDBD" strokeWidth="3.2" strokeLinecap="round" />
       <line x1="12" y1="27" x2="48" y2="27" stroke="#47BDBD" strokeWidth="3.2" strokeLinecap="round" />
       <line x1="12" y1="32" x2="48" y2="32" stroke="#47BDBD" strokeWidth="3.2" strokeLinecap="round" />
@@ -69,4 +69,4 @@ const EthosBiosciencesLogo: React.FC<Props> = ({ size = 34 }) => (
   </svg>
 );
 
-export default EthosBiosciencesLogo;
+export default EthosLogo;

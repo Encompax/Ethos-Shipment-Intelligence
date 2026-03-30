@@ -171,7 +171,7 @@ export async function updatePickingTicketStatus(ticketId: string, status: string
   return res.json();
 }
 
-// ── Fulfillment Transactions (PanatrackerGP-aligned) ─────────────────────────
+// ── Fulfillment Transactions (ERP-aligned) ──────────────────────────────────
 
 export async function fetchFulfillmentOrders(filters?: {
   status?: string; // pending, picked, verified

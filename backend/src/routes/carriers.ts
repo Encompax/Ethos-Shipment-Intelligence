@@ -57,7 +57,7 @@ export function registerCarrierRoutes(app: Express) {
   router.get("/metrics", async (req: Request, res: Response) => {
     try {
       // TODO: Query shipments from database
-      // In Phase 2, this will connect to starshipPoller data in sil.db
+      // In Phase 2, this will connect to SIL worker data in sil.db
       // For now, return mock data with realistic structure
       const metrics = generateMockCarrierMetrics();
       res.json(metrics);

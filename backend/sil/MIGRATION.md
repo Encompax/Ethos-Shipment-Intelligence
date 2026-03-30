@@ -36,7 +36,7 @@ All workers (StarShip poller, FedEx enricher, future Karrio, etc.) are pluggable
 **Status:** Production
 
 - StarShip is the only active shipment source
-- `starshipPoller.js` polls `http://d121q0t2:180/Setup/GetMaintainData`
+- `starshipPoller.js` polls `http://shipping-system.local:180/Setup/GetMaintainData`
 - FedEx enricher adds tracking events (read-only)
 - Encompax SIL is purely an observer—does not modify StarShip data
 - React dashboard queries the local SQLite database
@@ -45,7 +45,7 @@ All workers (StarShip poller, FedEx enricher, future Karrio, etc.) are pluggable
 ```
 STARSHIP_USER=<credentials>
 STARSHIP_PASS=<credentials>
-STARSHIP_BASE_URL=http://d121q0t2:180
+STARSHIP_BASE_URL=http://shipping-system.local:180
 FEDEX_CLIENT_ID=<credentials>
 FEDEX_CLIENT_SECRET=<credentials>
 ```
@@ -230,7 +230,7 @@ npm restart
 # StarShip poller
 STARSHIP_USER=<username>
 STARSHIP_PASS=<password>
-STARSHIP_BASE_URL=http://d121q0t2:180
+STARSHIP_BASE_URL=http://shipping-system.local:180
 
 # FedEx enricher
 FEDEX_CLIENT_ID=<client_id>

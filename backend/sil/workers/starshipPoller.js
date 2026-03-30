@@ -1,7 +1,7 @@
 /**
  * starshipPoller.js — Encompax SIL
  *
- * Polls the StarShip internal web app at d121q0t2:180 using an authenticated
+ * Polls the StarShip (legacy shipping) web app at STARSHIP_BASE_URL using an authenticated
  * session (ASP.NET cookie + anti-forgery token). Fetches shipment data from
  * POST /Setup/GetMaintainData and upserts into the local SQLite database.
  *
@@ -28,7 +28,7 @@ const path           = require('path');
 
 // ─── Configuration ────────────────────────────────────────────────────────────
 
-const BASE_URL   = process.env.STARSHIP_BASE_URL || 'http://d121q0t2:180';
+const BASE_URL   = process.env.STARSHIP_BASE_URL;
 const SS_USER    = process.env.STARSHIP_USER;
 const SS_PASS    = process.env.STARSHIP_PASS;
 const DB_PATH    = process.env.SIL_DB_PATH || './sil.db';
@@ -36,6 +36,10 @@ const POLL_MS    = parseInt(process.env.STARSHIP_POLL_INTERVAL_MS || '60000', 10
 const PAGE_SIZE      = 500;   // rows per request (UI default is 20; 500 is max for bulk pull)
 const HANDSHAKE_MS   = 5 * 60 * 1000;  // keep-alive interval — 5 minutes
 const WORKER_ID  = 'starshipPoller';
+
+if (!BASE_URL) {
+  throw new Error('STARSHIP_BASE_URL must be set in .env');
+}
 
 if (!SS_USER || !SS_PASS) {
   throw new Error('STARSHIP_USER and STARSHIP_PASS must be set in .env');
@@ -69,7 +73,7 @@ db.exec(`
     gp_customer_id     TEXT,
     billing_type       INTEGER,                 -- 0=Prepaid, 2=Recipient/Third-party
     is_hazmat          INTEGER DEFAULT 0,
-    is_freight         INTEGER DEFAULT 0,       -- FedEx Freight / LTL
+    is_freight         INTEGER DEFAULT 0,       -- Freight / LTL
     status_code        INTEGER,                 -- 0=Open, 1=Processed
     starship_user      TEXT,
     ud_field1          TEXT,                    -- "Shipment Field 1" customer PO / ref
@@ -285,7 +289,7 @@ function mapRow(row) {
   // Extract first UD field value (customer PO / external reference)
   const ud1 = (udFields.find(f => f.StarShipFieldID === 'UserField21') || {}).Value || null;
 
-  // Determine if FedEx Freight / LTL (CarrierType 0 in StarShip = Freight)
+  // Determine if freight / LTL (CarrierType 0 in StarShip = Freight)
   const isFreight = carrier.CarrierType === 0 ? 1 : 0;
 
   // HazMat flag from ShipmentOptions

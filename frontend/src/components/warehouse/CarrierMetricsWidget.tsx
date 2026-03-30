@@ -24,11 +24,26 @@ interface CarrierBreakdown {
   volume_by_carrier: Array<{ name: string; value: number }>;
 }
 
-const COLORS = {
-  'FedEx Ground': '#4B0082',
-  'FedEx Express': '#9932CC',
-  'FedEx Freight': '#DA70D6',
-  'UPS': '#FFB6C1',
+const CHART_COLORS = [
+  '#1B4F8C', // navy
+  '#47BDBD', // teal
+  '#2A9D8F',
+  '#E76F51',
+  '#F4A261',
+  '#E9C46A',
+  '#264653',
+  '#118AB2',
+  '#06D6A0',
+  '#FFD166',
+];
+
+const colorForName = (name: string) => {
+  if (!name) return CHART_COLORS[0];
+  let hash = 0;
+  for (let i = 0; i < name.length; i += 1) {
+    hash = (hash * 31 + name.charCodeAt(i)) % 2147483647;
+  }
+  return CHART_COLORS[Math.abs(hash) % CHART_COLORS.length];
 };
 
 function MetricCard({ label, value, sub }: { label: string; value: string; sub?: string }) {
@@ -134,8 +149,8 @@ export function CarrierMetricsWidget() {
                 fill="#8884d8"
                 dataKey="value"
               >
-                {Object.entries(COLORS).map(([name, color]) => (
-                  <Cell key={`cell-${name}`} fill={color} />
+                {data.cost_by_carrier.map((entry) => (
+                  <Cell key={`cell-${entry.name}`} fill={colorForName(entry.name)} />
                 ))}
               </Pie>
               <Tooltip formatter={(value: number) => fmt$(value)} />
@@ -160,8 +175,8 @@ export function CarrierMetricsWidget() {
                 fill="#8884d8"
                 dataKey="value"
               >
-                {Object.entries(COLORS).map(([name, color]) => (
-                  <Cell key={`cell-${name}`} fill={color} />
+                {data.volume_by_carrier.map((entry) => (
+                  <Cell key={`cell-${entry.name}`} fill={colorForName(entry.name)} />
                 ))}
               </Pie>
               <Tooltip formatter={(value: number) => fmtN(value)} />

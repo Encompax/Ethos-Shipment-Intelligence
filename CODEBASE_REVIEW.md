@@ -289,7 +289,7 @@ if (source) {
 **Recommended Fix:**
 ```typescript
 // Use query builder or strict validation
-const allowedSources = ['ninety_io', 'dynamics_gp', 'panatracker'];
+const allowedSources = ['lean_ops', 'dynamics_gp', 'velocity', 'paycom'];
 const source = req.query.source as string;
 
 if (source && !allowedSources.includes(source)) {

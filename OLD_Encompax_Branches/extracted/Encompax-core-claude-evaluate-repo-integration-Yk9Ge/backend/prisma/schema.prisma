@@ -1,0 +1,137 @@
+// prisma/schema.prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+/// First real table for Encompax
+model Datasource {
+  id          String   @id @default(cuid())
+  name        String
+  type        String
+  description String?
+  endpointUrl String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model User {
+  id        String     @id @default(cuid())
+  email     String     @unique
+  name      String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  roles     UserRole[]
+}
+
+model Role {
+  id          String           @id @default(cuid())
+  name        String           @unique
+  description String?
+  users       UserRole[]
+  permissions RolePermission[]
+}
+
+model Permission {
+  id          String           @id @default(cuid())
+  name        String           @unique
+  description String?
+  roles       RolePermission[]
+}
+
+model UserRole {
+  id        String   @id @default(cuid())
+  userId    String
+  roleId    String
+  user      User     @relation(fields: [userId], references: [id])
+  role      Role     @relation(fields: [roleId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+model RolePermission {
+  id           String     @id @default(cuid())
+  roleId       String
+  permissionId String
+  role         Role       @relation(fields: [roleId], references: [id])
+  permission   Permission @relation(fields: [permissionId], references: [id])
+  createdAt    DateTime   @default(now())
+}
+
+// ── Control Plane Models ──────────────────────────────────────────────────────
+
+/// A client project managed through the Encompax control plane
+model Project {
+  id          String        @id @default(cuid())
+  name        String
+  slug        String        @unique
+  description String?
+  status      String        @default("active") // active | paused | archived
+  color       String        @default("#0B9BA8") // accent color for the card
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  integrations Integration[]
+  workflows   Workflow[]
+}
+
+/// An integration instance tied to a project (StarShip, FedEx, Dynamics GP, etc.)
+model Integration {
+  id          String   @id @default(cuid())
+  projectId   String
+  name        String
+  type        String   // starship | fedex | karrio | dynamics-gp | paycom | velocity | ninety-io
+  enabled     Boolean  @default(true)
+  configJson  String   @default("{}") // JSON blob of non-secret config
+  lastSyncAt  DateTime?
+  lastStatus  String?  // ok | error | warning
+  lastMessage String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  project     Project  @relation(fields: [projectId], references: [id])
+}
+
+/// A named workflow definition (what steps to run and in what order)
+model Workflow {
+  id          String   @id @default(cuid())
+  projectId   String
+  name        String
+  description String?
+  definitionJson String @default("{}") // JSON DAG of steps
+  enabled     Boolean  @default(true)
+  schedule    String?  // cron expression or "manual"
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  project     Project  @relation(fields: [projectId], references: [id])
+  runs        Run[]
+}
+
+/// A single execution of a workflow
+model Run {
+  id         String     @id @default(cuid())
+  workflowId String
+  status     String     @default("queued") // queued | running | succeeded | failed | cancelled
+  trigger    String     @default("manual")  // manual | schedule | api
+  startedAt  DateTime?
+  finishedAt DateTime?
+  durationMs Int?
+  errorMessage String?
+  createdAt  DateTime   @default(now())
+  workflow   Workflow   @relation(fields: [workflowId], references: [id])
+  events     RunEvent[]
+}
+
+/// Individual timestamped events within a run (the event log / timeline)
+model RunEvent {
+  id        String   @id @default(cuid())
+  runId     String
+  level     String   @default("info") // info | warn | error | success
+  message   String
+  step      String?  // optional step name
+  metaJson  String   @default("{}") // arbitrary JSON payload
+  createdAt DateTime @default(now())
+  run       Run      @relation(fields: [runId], references: [id])
+}

@@ -1,0 +1,434 @@
+/* ──────────────────────────────────────────────────────────────────────────
+   Encompax Dashboard Theme
+   Inspired by Ethos Biosciences with modernized enterprise design
+   ────────────────────────────────────────────────────────────────────────── */
+
+:root {
+  /* Primary Colors - Ethos Teal */
+  --color-primary: #0B9BA8;
+  --color-primary-light: #1FB8C6;
+  --color-primary-dark: #077B84;
+  --color-primary-bg: #F0FAFB;
+  
+  /* Secondary Colors */
+  --color-secondary: #5B7C99;
+  --color-success: #1F7F4A;
+  --color-warning: #DA8D2B;
+  --color-error: #C4383D;
+  --color-info: #0761D5;
+  
+  /* Neutral Colors */
+  --color-bg-default: #FFFFFF;
+  --color-bg-light: #F8FAFB;
+  --color-bg-lighter: #F3F6F7;
+  --color-text-primary: #1C2E43;
+  --color-text-secondary: #556B7E;
+  --color-text-light: #8A959E;
+  --color-border: #E1E8ED;
+  --color-border-light: #F0F3F6;
+  
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(28, 46, 67, 0.04);
+  --shadow-md: 0 2px 8px rgba(28, 46, 67, 0.08);
+  --shadow-lg: 0 4px 16px rgba(28, 46, 67, 0.12);
+  --shadow-xl: 0 8px 24px rgba(28, 46, 67, 0.16);
+  
+  /* Spacing */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+  
+  /* Typography */
+  --font-family-base: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Roboto, sans-serif;
+  --font-family-mono: "Monaco", "Menlo", "Ubuntu Mono", monospace;
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  
+  /* Border Radius */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-full: 999px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-family-base);
+  background-color: var(--color-bg-light);
+  color: var(--color-text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Dashboard Root
+   ────────────────────────────────────────────────────────────────────────── */
+
+.dashboard-root {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: var(--color-bg-light);
+}
+
+.dashboard-header {
+  padding: var(--space-lg) var(--space-xl);
+  background: var(--color-bg-default);
+  border-bottom: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
+  z-index: 100;
+}
+
+.dashboard-header h1 {
+  margin: 0;
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  letter-spacing: -0.5px;
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Tab Navigation
+   ────────────────────────────────────────────────────────────────────────── */
+
+.dashboard-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  padding: var(--space-md) var(--space-xl);
+  background: var(--color-bg-default);
+  border-bottom: 1px solid var(--color-border);
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+.tab-button {
+  padding: var(--space-sm) var(--space-lg);
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.tab-button:hover {
+  color: var(--color-primary);
+  background-color: var(--color-primary-bg);
+}
+
+.tab-button:active {
+  background-color: var(--color-primary-bg);
+}
+
+.tab-button.active {
+  color: var(--color-primary);
+  background-color: var(--color-primary-bg);
+  border-color: var(--color-primary);
+  font-weight: var(--font-weight-semibold);
+}
+
+.tab-button.tab-pinned {
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.01em;
+}
+.tab-button.tab-pinned.active {
+  color: var(--color-primary-dark);
+  background-color: color-mix(in srgb, var(--color-primary) 12%, transparent);
+  border-color: var(--color-primary-dark);
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Dashboard Content
+   ────────────────────────────────────────────────────────────────────────── */
+
+.dashboard-content {
+  flex: 1;
+  padding: var(--space-xl);
+  overflow: auto;
+  background-color: var(--color-bg-light);
+}
+
+.panel-grid {
+  display: grid;
+  gap: var(--space-lg);
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Cards / Panels
+   ────────────────────────────────────────────────────────────────────────── */
+
+.panel {
+  background: var(--color-bg-default);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.panel:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-border-light);
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-md);
+  padding-bottom: var(--space-md);
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.panel-title {
+  margin: 0;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.panel-subtitle {
+  margin: var(--space-sm) 0 0 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-light);
+}
+
+.panel-body {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.panel-footer {
+  margin-top: auto;
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--color-border-light);
+}
+
+/* Metric Cards */
+.metric-card {
+  background: linear-gradient(135deg, var(--color-primary-bg) 0%, rgba(11, 155, 168, 0.02) 100%);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  margin-bottom: var(--space-md);
+}
+
+.metric-label {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-medium);
+  margin-bottom: var(--space-xs);
+}
+
+.metric-value {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+}
+
+.metric-change {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-light);
+  margin-top: var(--space-xs);
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Buttons
+   ────────────────────────────────────────────────────────────────────────── */
+
+.btn {
+  padding: var(--space-sm) var(--space-lg);
+  border-radius: var(--radius-md);
+  border: none;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  white-space: nowrap;
+}
+
+.btn-primary {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: var(--color-primary-dark);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-secondary {
+  background-color: var(--color-bg-lighter);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+}
+
+.btn-secondary:hover {
+  background-color: var(--color-bg-light);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.btn-small {
+  padding: var(--space-xs) var(--space-md);
+  font-size: var(--font-size-xs);
+}
+
+.btn-block {
+  width: 100%;
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Forms
+   ────────────────────────────────────────────────────────────────────────── */
+
+input,
+textarea,
+select {
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-default);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(11, 155, 168, 0.1);
+}
+
+input::placeholder {
+  color: var(--color-text-light);
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Tables
+   ────────────────────────────────────────────────────────────────────────── */
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  padding: var(--space-md);
+  text-align: left;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-lighter);
+  border-bottom: 2px solid var(--color-border);
+}
+
+td {
+  padding: var(--space-md);
+  border-bottom: 1px solid var(--color-border-light);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+tr:hover {
+  background-color: var(--color-bg-lighter);
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Status Badges
+   ────────────────────────────────────────────────────────────────────────── */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-xs) var(--space-md);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+}
+
+.badge-success {
+  background-color: rgba(31, 127, 74, 0.1);
+  color: var(--color-success);
+}
+
+.badge-warning {
+  background-color: rgba(218, 141, 43, 0.1);
+  color: var(--color-warning);
+}
+
+.badge-error {
+  background-color: rgba(196, 56, 61, 0.1);
+  color: var(--color-error);
+}
+
+.badge-info {
+  background-color: rgba(7, 97, 213, 0.1);
+  color: var(--color-info);
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Scrollbars (Webkit)
+   ────────────────────────────────────────────────────────────────────────── */
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg-light);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-light);
+}
